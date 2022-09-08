@@ -19,8 +19,20 @@ jobs:
             registry: docker.io
             repository: jiroos/cd
             tag_with_sha: true
+        - uses: actions/checkout@v2
+        - name: Install NPM dependencies
+          run: |
+            npm install --production --unsafe-perm
         - name: SonarCloud Scan
           uses: sonarsource/sonarcloud-github-action@master
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        - uses: sburris/dependency-check-action@master
+          with:
+            Project-Name: TestApp
+        - name: Archive dependency check reports
+          uses: actions/upload-artifact@v1
+          with:
+            name: reports
+            path: reports
